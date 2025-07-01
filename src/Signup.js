@@ -12,7 +12,7 @@ export default function SignUp() {
     setSignupLoading(true);
     setSignupError("");
 
-    const response = await fetch("https://45kfpc-8080.csb.app/register", {
+    const response = await fetch("https://todobackend-shk.onrender.com/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
