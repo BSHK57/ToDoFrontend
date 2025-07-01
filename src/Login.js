@@ -15,7 +15,7 @@ export default function Login({ setToken }) {
     const response = await fetch("https://todobackend-shk.onrender.com/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: json.stringify({ username, password }),
+      body: JSON.stringify({ username, password }),
     });
     const data = await response.json();
     setAuthLoading(false);
@@ -39,7 +39,7 @@ export default function Login({ setToken }) {
         </div>
       )}
       <form
-        onSubmin={(e) => {
+        onSubmit={(e) => {
           e.preventDefault();
           login(username, password);
         }}
