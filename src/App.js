@@ -102,116 +102,162 @@ function App() {
 
   // Main app UI for authenticated users
   const MainApp = () => (
-    <div className="min-h-screen bg-orange-50 flex flex-col">
-      <nav className="bg-orange-500 text-white px-6 py-4 flex justify-between items-center shadow-md">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
+      <nav className="bg-gradient-to-r from-purple-600 to-indigo-600 backdrop-blur-lg bg-opacity-90 text-white px-6 py-4 flex justify-between items-center shadow-2xl border-b border-purple-500/20">
         <ul className="flex space-x-4">
           <li>
             <a
               href="#"
-              className="px-4 py-2 rounded-full font-semibold transition-colors duration-200 hover:bg-orange-600 hover:text-white focus:bg-orange-700 focus:outline-none bg-orange-100 text-orange-700 shadow-sm"
+              className="px-6 py-2 rounded-full font-semibold transition-all duration-300 hover:bg-white/20 hover:text-white focus:bg-white/30 focus:outline-none bg-white/10 text-white shadow-lg backdrop-blur-sm border border-white/20 hover:scale-105"
             >
-              Home
+              🏠 Home
             </a>
           </li>
         </ul>
         <button
           onClick={logout}
-          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full shadow transition-colors duration-200"
+          className="px-6 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl border border-red-400/30"
         >
-          Logout
+          🚪 Logout
         </button>
       </nav>
-      <main className="flex-1 p-8">
-        <h1 className="text-4xl font-extrabold text-center mb-8 text-orange-600 drop-shadow">
-          MERN To-Do App
-        </h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            addTask(e.target[0].value);
-            e.target[0].value = "";
-          }}
-          className="mb-6 flex gap-2 justify-center"
-        >
-          <input
-            type="text"
-            className="p-3 border-2 border-orange-300 rounded-lg w-2/3 focus:outline-none focus:ring-2 focus:ring-orange-400"
-            placeholder="Add a task"
-          />
-          <button
-            type="submit"
-            className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors duration-200"
-          >
-            Add
-          </button>
-        </form>
-        <div className="mb-6 flex gap-4 justify-center">
-          <select
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="p-2 border-2 border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-            value={filterStatus}
-          >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="completed">Completed</option>
-          </select>
-          <select
-            onChange={(e) => setFilterPriority(e.target.value)}
-            className="p-2 border-2 border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-            value={filterPriority}
-          >
-            <option value="all">All Priorities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
+      <main className="flex-1 p-8 max-w-6xl mx-auto w-full">
+        <div className="text-center mb-12">
+          <h1 className="text-6xl font-black mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-2xl">
+            ✨ MERN To-Do App
+          </h1>
+          <p className="text-slate-300 text-lg font-medium">Organize your life with style</p>
         </div>
-        <ul className="space-y-4">
-          {filteredTasks.map((task) => (
-            <li
-              key={task._id}
-              className="p-4 bg-white rounded-xl shadow flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-orange-100 hover:shadow-lg transition duration-300"
+        
+        <div className="backdrop-blur-xl bg-white/10 rounded-3xl p-8 shadow-2xl border border-white/20 mb-8">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              addTask(e.target[0].value);
+              e.target[0].value = "";
+            }}
+            className="mb-8 flex gap-4 justify-center"
+          >
+            <input
+              type="text"
+              className="p-4 border-2 border-purple-300/30 rounded-2xl w-2/3 bg-white/10 backdrop-blur-sm text-white placeholder-slate-300 focus:outline-none focus:ring-4 focus:ring-purple-400/50 focus:border-purple-400 transition-all duration-300 shadow-lg"
+              placeholder="✍️ Add a new task..."
+            />
+            <button
+              type="submit"
+              className="px-8 py-4 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg hover:scale-105 hover:shadow-xl border border-purple-400/30"
             >
-              <div className="flex-1">
-                <span className="text-lg text-orange-800">{task.text}</span>
-                <span className="ml-2 text-sm text-gray-500">
-                  ({task.status}, {task.priority})
-                </span>
+              ➕ Add Task
+            </button>
+          </form>
+          
+          <div className="flex gap-6 justify-center flex-wrap">
+            <div className="flex flex-col items-center gap-2">
+              <label className="text-slate-300 font-semibold text-sm">📊 Filter by Status</label>
+              <select
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="p-3 border-2 border-purple-300/30 rounded-xl bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:ring-4 focus:ring-purple-400/50 transition-all duration-300 shadow-lg"
+                value={filterStatus}
+              >
+                <option value="all" className="bg-slate-800 text-white">All Status</option>
+                <option value="pending" className="bg-slate-800 text-white">Pending</option>
+                <option value="completed" className="bg-slate-800 text-white">Completed</option>
+              </select>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <label className="text-slate-300 font-semibold text-sm">🎯 Filter by Priority</label>
+              <select
+                onChange={(e) => setFilterPriority(e.target.value)}
+                className="p-3 border-2 border-purple-300/30 rounded-xl bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:ring-4 focus:ring-purple-400/50 transition-all duration-300 shadow-lg"
+                value={filterPriority}
+              >
+                <option value="all" className="bg-slate-800 text-white">All Priorities</option>
+                <option value="low" className="bg-slate-800 text-white">Low</option>
+                <option value="medium" className="bg-slate-800 text-white">Medium</option>
+                <option value="high" className="bg-slate-800 text-white">High</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {filteredTasks.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">📝</div>
+              <p className="text-slate-400 text-xl font-medium">No tasks yet. Add one above!</p>
+            </div>
+          ) : (
+            filteredTasks.map((task) => (
+              <div
+                key={task._id}
+                className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-2xl border border-white/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-purple-500/20 hover:shadow-2xl p-6"
+              >
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-2xl">
+                        {task.status === "completed" ? "✅" : "⏳"}
+                      </span>
+                      <span className={`text-lg font-medium ${task.status === "completed" ? "text-green-300 line-through" : "text-white"}`}>
+                        {task.text}
+                      </span>
+                    </div>
+                    <div className="flex gap-3 items-center text-sm">
+                      <span className={`px-3 py-1 rounded-full font-semibold ${
+                        task.status === "pending" 
+                          ? "bg-yellow-500/20 text-yellow-300 border border-yellow-400/30" 
+                          : "bg-green-500/20 text-green-300 border border-green-400/30"
+                      }`}>
+                        {task.status === "pending" ? "🔄 Pending" : "✨ Completed"}
+                      </span>
+                      <span className={`px-3 py-1 rounded-full font-semibold ${
+                        task.priority === "high" 
+                          ? "bg-red-500/20 text-red-300 border border-red-400/30" 
+                          : task.priority === "medium"
+                          ? "bg-orange-500/20 text-orange-300 border border-orange-400/30"
+                          : "bg-blue-500/20 text-blue-300 border border-blue-400/30"
+                      }`}>
+                        {task.priority === "high" ? "🔥 High" : task.priority === "medium" ? "⚡ Medium" : "❄️ Low"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 items-center flex-wrap">
+                    <button
+                      onClick={() => updateTaskStatus(task._id, task.status)}
+                      className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg ${
+                        task.status === "pending"
+                          ? "bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border border-yellow-400/30"
+                          : "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border border-green-400/30"
+                      }`}
+                    >
+                      {task.status === "pending" ? "✅ Complete" : "🔄 Pending"}
+                    </button>
+                    <select
+                      value={task.priority}
+                      onChange={(e) => updateTaskPriority(task._id, e.target.value)}
+                      className="p-2 border-2 border-purple-300/30 rounded-xl bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:ring-4 focus:ring-purple-400/50 transition-all duration-300 shadow-lg"
+                    >
+                      <option value="low" className="bg-slate-800 text-white">❄️ Low</option>
+                      <option value="medium" className="bg-slate-800 text-white">⚡ Medium</option>
+                      <option value="high" className="bg-slate-800 text-white">🔥 High</option>
+                    </select>
+                    <button
+                      onClick={() => deleteTask(task._id)}
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:scale-105 hover:shadow-xl border border-red-400/30"
+                      title="Delete Task"
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="flex gap-2 items-center">
-                <button
-                  onClick={() => updateTaskStatus(task._id, task.status)}
-                  className={`px-3 py-1 rounded-full font-semibold transition-colors duration-200 ${
-                    task.status === "pending"
-                      ? "bg-yellow-400 text-yellow-900 hover:bg-yellow-500"
-                      : "bg-green-400 text-green-900 hover:bg-green-500"
-                  }`}
-                >
-                  {task.status === "pending" ? "Mark Complete" : "Mark Pending"}
-                </button>
-                <select
-                  value={task.priority}
-                  onChange={(e) => updateTaskPriority(task._id, e.target.value)}
-                  className="p-2 border-2 border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-                <button
-                  onClick={() => deleteTask(task._id)}
-                  className="flex items-center gap-1 px-3 py-1 bg-red-500 hover:bg-red-700 text-white font-semibold rounded-full transition-colors duration-200 ml-2"
-                  title="Delete Task"
-                >
-                  <i className="fas fa-trash" /> Delete
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+            ))
+          )}
+        </div>
       </main>
-      <footer className="bg-orange-500 text-white p-4 mt-auto text-center shadow-inner">
-        © 2025 Your To-Do App
+      <footer className="bg-gradient-to-r from-purple-600 to-indigo-600 backdrop-blur-lg bg-opacity-90 text-white p-6 mt-auto text-center shadow-2xl border-t border-purple-500/20">
+        <p className="text-lg font-medium">© 2025 Your Amazing To-Do App ✨</p>
+        <p className="text-purple-200 text-sm mt-1">Made with 💜 and modern design</p>
       </footer>
     </div>
   );
