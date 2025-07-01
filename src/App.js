@@ -7,29 +7,68 @@ import {
 } from "react-router-dom";
 import Login from "./Login";
 import Signup from "./Signup";
+import BackendLoadingScreen from "./BackendLoadingScreen";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [tasks, setTasks] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
+  const [backendReady, setBackendReady] = useState(false);
+  const [isCheckingBackend, setIsCheckingBackend] = useState(true);
+
+  // Check if backend is ready on app start
+  useEffect(() => {
+    const checkBackendStatus = async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch('https://todobackend-shk.onrender.com/health', {
+          method: 'GET',
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          setBackendReady(true);
+          setIsCheckingBackend(false);
+        } else {
+          setIsCheckingBackend(false);
+        }
+      } catch (error) {
+        console.log('Initial backend check failed:', error.message);
+        setIsCheckingBackend(false);
+      }
+    };
+
+    checkBackendStatus();
+  }, []);
 
   const fetchTasks = async (token) => {
-    const response = await fetch(
-      "https://todobackend-shk.onrender.com/tasks",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    const data = await response.json();
-    console.log("Fetched tasks:", data);
-    // Ensure tasks is always an array
-    setTasks(Array.isArray(data) ? data : data.tasks || []);
+    try {
+      const response = await fetch(
+        "https://todobackend-shk.onrender.com/tasks",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const data = await response.json();
+      console.log("Fetched tasks:", data);
+      // Ensure tasks is always an array
+      setTasks(Array.isArray(data) ? data : data.tasks || []);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      setTasks([]);
+    }
   };
 
   useEffect(() => {
-    if (token) fetchTasks(token);
-  }, [token]);
+    if (token && backendReady) {
+      fetchTasks(token);
+    }
+  }, [token, backendReady]);
 
   const logout = () => {
     setToken("");
@@ -38,60 +77,76 @@ function App() {
   };
 
   const addTask = async (text) => {
-    const response = await fetch(
-      "https://todobackend-shk.onrender.com/tasks",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ text, status: "pending", priority: "medium" }),
-      }
-    );
-    const newTask = await response.json();
-    setTasks([...tasks, newTask]);
+    try {
+      const response = await fetch(
+        "https://todobackend-shk.onrender.com/tasks",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ text, status: "pending", priority: "medium" }),
+        }
+      );
+      const newTask = await response.json();
+      setTasks([...tasks, newTask]);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
   const deleteTask = async (id) => {
-    await fetch(`https://todobackend-shk.onrender.com/tasks/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setTasks(tasks.filter((task) => task._id !== id));
+    try {
+      await fetch(`https://todobackend-shk.onrender.com/tasks/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(tasks.filter((task) => task._id !== id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
   };
 
   const updateTaskStatus = async (id, currentStatus) => {
-    const newStatus = currentStatus === "pending" ? "completed" : "pending";
-    const response = await fetch(
-      `https://todobackend-shk.onrender.com/tasks/${id}/status`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      }
-    );
-    const updatedTask = await response.json();
-    setTasks(tasks.map((task) => (task._id === id ? updatedTask : task)));
+    try {
+      const newStatus = currentStatus === "pending" ? "completed" : "pending";
+      const response = await fetch(
+        `https://todobackend-shk.onrender.com/tasks/${id}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+      const updatedTask = await response.json();
+      setTasks(tasks.map((task) => (task._id === id ? updatedTask : task)));
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
   };
 
   const updateTaskPriority = async (id, newPriority) => {
-    const response = await fetch(
-      `https://todobackend-shk.onrender.com/tasks/${id}/priority`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ priority: newPriority }),
-      }
-    );
-    const updatedTask = await response.json();
-    setTasks(tasks.map((task) => (task._id === id ? updatedTask : task)));
+    try {
+      const response = await fetch(
+        `https://todobackend-shk.onrender.com/tasks/${id}/priority`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ priority: newPriority }),
+        }
+      );
+      const updatedTask = await response.json();
+      setTasks(tasks.map((task) => (task._id === id ? updatedTask : task)));
+    } catch (error) {
+      console.error("Error updating task priority:", error);
+    }
   };
 
   const filteredTasks = tasks.filter(
@@ -99,6 +154,28 @@ function App() {
       (filterStatus === "all" || task.status === filterStatus) &&
       (filterPriority === "all" || task.priority === filterPriority)
   );
+
+  const handleBackendReady = () => {
+    setBackendReady(true);
+    setIsCheckingBackend(false);
+  };
+
+  // Show loading screen if backend is not ready and we're still checking
+  if (!backendReady && !isCheckingBackend) {
+    return <BackendLoadingScreen onBackendReady={handleBackendReady} />;
+  }
+
+  // Show initial loading while checking backend status
+  if (isCheckingBackend) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4 animate-pulse">🔄</div>
+          <p className="text-white text-lg">Checking server status...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Main app UI for authenticated users
   const MainApp = () => (
