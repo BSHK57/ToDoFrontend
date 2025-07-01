@@ -101,9 +101,10 @@ export default function SignUp() {
         <div className="mt-8 text-center">
           <p className="text-slate-300">
             Already have an account?{" "}
-            <a className="text-pink-400 hover:text-pink-300 font-bold hover:underline transition-colors duration-200" href="/login">
+            <Link to="/login">
+            <button className="text-pink-400 hover:text-pink-300 font-bold hover:underline transition-colors duration-200">
               Sign In 🔐
-            </a>
+            </button></Link>
           </p>
         </div>
 

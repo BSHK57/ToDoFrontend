@@ -100,9 +100,10 @@ export default function Login({ setToken }) {
         <div className="mt-8 text-center">
           <p className="text-slate-300">
             Don't have an account?{" "}
-            <a className="text-purple-400 hover:text-purple-300 font-bold hover:underline transition-colors duration-200" href="/signup">
+             <Link to="/signup">
+            <button className="text-purple-400 hover:text-purple-300 font-bold hover:underline transition-colors duration-200">
               Create Account ✨
-            </a>
+            </button></Link>
           </p>
         </div>
 
